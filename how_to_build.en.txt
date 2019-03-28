@@ -1,0 +1,33 @@
+(1) Download hcpp source file.
+
+(3) Extract it.
+
+    $ bunzip2 -c hcpp_src.tar.bz2 | tar xf -
+
+(4) Execute Visual Studio and open hcpp.sln in 10_hcpp/src and build
+    as usual.
+
+   (*) If the error about Windows SDK version occurs, please do as
+       error message approach, i.e. select [solution re-target].
+    
+
+(5) Simple confirmation
+
+    $ cat sample.txt
+    #define FOO(a,b) ((a)+(b))
+    int f(void)
+    {
+      return FOO(3,7);
+    }
+    $ x64/Debug/hcpp.exe sample.txt
+        #line 1 "... 10_hcpp/src/sample.txt"
+
+    int f(void)
+    {
+      return  ((3)+(7)) ;
+    }
+    $
+
+(5) Build with gcc:
+    $ cd 10_hcpp/src
+    $ make

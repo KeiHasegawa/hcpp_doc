@@ -1,0 +1,43 @@
+1. Download mcpp source package
+
+   For example, use cygwin installer.
+
+2. Expand and build
+
+    % ls
+    mcpp-2.7.2-1-src.tar.xz
+    % xz -d mcpp-2.7.2-1-src.tar.xz 
+    % ls
+    mcpp-2.7.2-1-src.tar
+    % tar xf mcpp-2.7.2-1-src.tar
+    % ls
+    mcpp-2.7.2-1-src.tar
+    mcpp-2.7.2.tar.gz
+    mcpp-man.patch
+    mcpp-manual.html.patch
+    mcpp.cygport
+    patch.mcpp.2.7.2
+    % gunzip -c mcpp-2.7.2.tar.gz | tar xf -
+    % cd mcpp-2.7.2/
+    % ./configure
+    % make
+    % find . -name mcpp.exe
+    src/mcpp.exe
+
+3. Simplify Makefile.
+
+   At 2, by executing ./configure, we generated config.h and compiled
+   specifying -DHAVE_CONFIG_H. But here use `nocofig.H'. It was possible
+   to build without any fix.
+
+4. Visual Studio Build
+
+   There are some errors which should be warnings by Visual Studio compiler.
+   So fixed them. And also specified /D "_CRT_SECURE_NO_WARNINGS"o option.
+
+5. Add function
+
+   -L <file> : Output macro definition position and reference position to
+               specified file. You can see them by searching `fp_doc'.
+
+   -H : Not normalize input file name (i.e. not make it full path).

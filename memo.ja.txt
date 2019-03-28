@@ -1,0 +1,44 @@
+1. mcpp のソースパッケージを取得
+
+    cygwin のインストーラーを使った.
+
+2. 展開して gcc でビルド
+
+    % ls
+    mcpp-2.7.2-1-src.tar.xz
+    % xz -d mcpp-2.7.2-1-src.tar.xz 
+    % ls
+    mcpp-2.7.2-1-src.tar
+    % tar xf mcpp-2.7.2-1-src.tar
+    % ls
+    mcpp-2.7.2-1-src.tar
+    mcpp-2.7.2.tar.gz
+    mcpp-man.patch
+    mcpp-manual.html.patch
+    mcpp.cygport
+    patch.mcpp.2.7.2
+    % gunzip -c mcpp-2.7.2.tar.gz | tar xf -
+    % cd mcpp-2.7.2/
+    % ./configure
+    % make
+    % find . -name mcpp.exe
+    src/mcpp.exe
+
+3. 最低限必要なファイルのみ選んで Makefile もシンプルにした
+
+    2 では ./configure により config.h を生成し, コンパイル時に -DHAVE_CONFIG_H
+    を指定しているが, ここでは noconfig.H を使ってビルドするようにした. 修正なしで
+    ビルドできている.
+
+4. Visual Stdio でのビルド
+
+    本来警告として扱うべきものが, Visual Studio のコンパイラでエラーとして扱われてい
+    たのでエラーにならないように修正した.
+    またコンパイルオプションに /D "_CRT_SECURE_NO_WARNINGS" を追加した.
+
+5. 機能追加
+
+    -L <file> でマクロの定義箇所と参照箇所をファイルに出力するというもの.
+    fp_doc で検索.
+
+    -H で入力ファイルをフルパスにしない.

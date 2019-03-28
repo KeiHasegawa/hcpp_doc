@@ -1,0 +1,125 @@
+(1) Include standard header file.
+(2) Compile
+(3) Case of building hcpp with gcc.
+(4) Include Visual Studio standard header file.
+
+(1) Include standard header file.
+
+    % cat a.c
+    #include <stdio.h>
+
+    int main()
+    {
+      printf("hello world\n");
+      return 0;
+    }
+    % C:/10_hcpp/src/x64/Debug/hcpp.exe -o a.i a.c
+    Here, hcpp may detect error that it cannot open `stdio.h'
+
+    % gcc -o a.i -E a.c
+    and look at a.i.
+
+    # 1 "/usr/include/stdio.h" 1 3 4
+
+    If there is above line, it is the evidence of opening the file.
+    Guess from it,
+
+    % C:/10_hcpp/src/x64/Debug/hcpp.exe -o a.i a.c -IC:/cygwin64/usr/include
+
+    hcpp doesn't detect previous error. But anywhere, hcpp outputs many
+    warnings. Because I don't want to care about these warnings, add
+    `-W 0' option:
+    
+    % C:/10_hcpp/src/x64/Debug/hcpp.exe -o a.i a.c -IC:/cygwin64/usr/include -W 0
+
+    According to the environment, hcpp may detect error that it cannot open
+    `stddef.h'. Samely,
+
+    % gcc -o a.i -E a.c
+
+    look at `a.i' and confirm the path of `stddef.h'.
+
+    # 1 "/usr/lib/gcc/x86_64-pc-cygwin/7.3.0/include/stddef.h" 1 3 4
+
+    Acutually, `stddef.h' doesn't exist at
+
+    C:/cygwin64/usr/lib/gcc/x86_64-pc-cygwin/7.3.0/include/stddef.h
+
+    but exists at
+
+    C:/cygwin64/lib/gcc/x86_64-pc-cygwin/7.3.0/include/stddef.h
+               ^^^^^
+
+    So add `-IC:/cygwin64/lib/gcc/x86_64-pc-cygwin/7.3.0/include' option,
+    execute hcpp again:
+    
+    % C:/10_hcpp/src/x64/Debug/hcpp.exe -o a.i a.c -IC:/cygwin64/usr/include -W 0 -IC:/cygwin64/lib/gcc/x86_64-pc-cygwin/7.3.0/include
+
+    hcpp doesn't detect any error and generate a.i as expected.
+
+(2) Compile
+
+    If you want to just check error, execute hcc1 like bellow:
+
+    % C:/20_hcc1/src/x64/Debug/hcc1.exe a.i --no-generator
+    
+    typedef __builtin_va_list __gnuc_va_list;
+
+    This line causes error. If `__builtin_va_list' is defined as `char*',
+    this error can be avoided. Add -D__builtin_va_list='char*' option
+    and execute hcpp again:
+
+    % C:/10_hcpp/src/x64/Debug/hcpp.exe -o a.i a.c -IC:/cygwin64/usr/include -W 0 -IC:/cygwin64/lib/gcc/x86_64-pc-cygwin/7.3.0/include -D__builtin_va_list='char*'
+    and execute hcc1, the next line was error:
+
+    __extension__ typedef long long _off64_t;
+
+    Add -D__extension__= option and execute hcpp.
+
+    and execute hcc1, the next line was error:
+
+    static __inline__  __uint32_t __ntohl(__uint32_t);
+
+    Add -D__inline__=inline option and exeute hcpp.
+
+    and execute hcc1, the next line was error:
+
+	__asm__("bswap %0" : "=r" (_x) : "0" (_x));
+
+    Add -D__asm__=asm option and execute hcpp.
+    Finally, hcc1 doesn't detect any error. Last hcpp execution is:
+
+    % C:/10_hcpp/src/x64/Debug/hcpp.exe -o a.i a.c -IC:/cygwin64/usr/include -W 0 -IC:/cygwin64/lib/gcc/x86_64-pc-cygwin/7.3.0/include -D__builtin_va_list='char*' -D__extension__= -D__inline__=inline -D__asm__=asm
+
+(3) Case of building hcpp with gcc.
+
+    % pushd C:/10_hcpp/src
+    % make
+    % popd
+    % C:/10_hcpp/src/hcpp.exe -o a.i a.c -I/usr/include -W 0 -I/usr/lib/gcc/x86_64-pc-cygwin/7.3.0/include -D__builtin_va_list='char*' -D__extension__= -D__inline__=inline -D__asm__=asm
+    % C:/20_hcc1/src/x64/Debug/hcc1.exe a.i --no-generator
+
+    Above works well. The point is the directory specified to -I option.
+    -IC:... doesn't work well.
+
+(4) Include Visual Studio standard header file.
+
+    Visual Studio Compiler cl.exe references the environment variable
+    `Include' for searching include directory when it is executed
+    from command line. Samely Visual Studio build hcpp.exe has this
+    ability.
+
+    % printenv Include
+    C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.15.26726\include;C:\windows kits\10\include\10.0.17134.0\ucrt
+
+    This value must be set suitably according to your environment.
+    Unfortunately, gcc build hcpp.exe doesn't have this ablity.
+    
+    % C:/10_hcpp/src/x64/Debug/hcpp.exe -o a.i a.c -D_M_X64 -D__int64='long long' -D__cdecl= -D__pragma='#pragma' -D_Bool=int -D__declspec\(a\)= -D__inline=inline -W 0
+    % vs_header_conv.pl a.i > a.ii
+    % C:/20_hcc1/src/x64/Debug/hcc1.exe a.ii --no-generator
+
+    Above commands results in no error. But unfortunately, vs_header_conv.pl
+    is required.
+
+    Top -> C/C++ Preprocessor -> vs_header_conv.pl

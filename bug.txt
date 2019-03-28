@@ -1,0 +1,27 @@
+1. コメント以外のテキストの後に複数行にわたるコメントが続くと行番号情報が正しくない.
+
+% cat -n sample.txt 
+     1	
+     2	
+     3	
+     4	
+     5	int a; /* This is comment.
+     6
+     7
+     8	          This is comment, too.      */
+% hcpp.exe sample.txt
+    #line 1 "sample.txt"
+#line 8 "sample.txt"    ★
+int a;
+%
+
+★は出すんだったら 8 じゃなくて 5 が正しい. もしくは
+
+
+
+
+int a;
+#line 8 "sample.txt
+
+だったら正しい.
+
