@@ -2,7 +2,7 @@
 
 (2) 以下のようにして解凍する。
 
-    $ bunzip2 -c hcpp_src.tar.bz2 | tar xf -
+    % bunzip2 -c hcpp_src.tar.bz2 | tar xf -
 
 (3) 10_hcpp/src ディレクトリにある hcpp.sln を Visual Studio で開いて
     通常通りビルドする。
@@ -12,21 +12,21 @@
 
 (4) 動作確認方法
 
-    $ cat sample.txt
+    % cat sample.txt
     #define FOO(a,b) ((a)+(b))
     int f(void)
     {
       return FOO(3,7);
     }
-    $ x64/Debug/hcpp.exe sample.txt
+    % x64/Debug/hcpp.exe sample.txt
         #line 1 "... 10_hcpp/src/sample.txt"
 
     int f(void)
     {
       return  ((3)+(7)) ;
     }
-    $
+    %
 
 (5) gcc でのビルド
-    $ cd 10_hcpp/src
-    $ make
+    % cd 10_hcpp/src
+    % make
