@@ -42,3 +42,19 @@
     fp_doc で検索.
 
     -H で入力ファイルをフルパスにしない.
+
+6. バグ修正 (2021/03/09)
+
+diff --git a/mbchar.c b/mbchar.c
+index c0afb85..5440d11 100644
+--- a/mbchar.c
++++ b/mbchar.c
+@@ -381,7 +381,7 @@ const char *    set_encoding(
+         }
+     }
+     strcpy( norm, name);
+-    if (norm[ 5] == '.')
++    if (strlen(norm) > 5 && norm[ 5] == '.')
+         memmove( norm, norm + 5, strlen( norm + 5) + 1);
+         /* Remove initial 'xxxxx.' as 'ja_JP.', 'en_US.' or any other   */
+     conv_case( norm, norm + strlen( norm), LOWER);
