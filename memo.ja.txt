@@ -58,3 +58,8 @@ index c0afb85..5440d11 100644
          memmove( norm, norm + 5, strlen( norm + 5) + 1);
          /* Remove initial 'xxxxx.' as 'ja_JP.', 'en_US.' or any other   */
      conv_case( norm, norm + strlen( norm), LOWER);
+
+7. バグ修正 (2021/03/11)
+   コメントを JIS で書いた場合 JIS コードの 0x2a, 0x2f をコメントの
+   終了と解釈してしまうバグを修正した.
+
