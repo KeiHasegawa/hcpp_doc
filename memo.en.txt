@@ -42,22 +42,10 @@
 
    -H : Not normalize input file name (i.e. not make it full path).
 
-6. Bug fix (2021/03/09)
+6. -e option bug fix (2021/03/09)
+   "Unknown encoding" error messages were reported for -e sjis, for example,
+   even though `sjis' is valid encoding.
 
-diff --git a/mbchar.c b/mbchar.c
-index c0afb85..5440d11 100644
---- a/mbchar.c
-+++ b/mbchar.c
-@@ -381,7 +381,7 @@ const char *    set_encoding(
-         }
-     }
-     strcpy( norm, name);
--    if (norm[ 5] == '.')
-+    if (strlen(norm) > 5 && norm[ 5] == '.')
-         memmove( norm, norm + 5, strlen( norm + 5) + 1);
-         /* Remove initial 'xxxxx.' as 'ja_JP.', 'en_US.' or any other   */
-     conv_case( norm, norm + strlen( norm), LOWER);
-
-7. Bug fix (2021/03/11)
+7. JIS comment bug fix (2021/03/11)
    JIS code comment which contains 0x2a = '*', 0x2f = '/' as JIS code
    is recognized as the end of comment.
