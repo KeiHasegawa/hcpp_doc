@@ -59,7 +59,7 @@
 
 (2) Compile
 
-    If you want to just check error, execute hcc1 like bellow:
+    If you want to just check error, execute hcc1 like below:
 
     % C:/20_hcc1/src/x64/Debug/hcc1.exe a.i --no-generator
     
