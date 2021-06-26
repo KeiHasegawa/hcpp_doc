@@ -1,16 +1,16 @@
-(1) hcpp �̃\�[�X���_�E�����[�h����B
+(1) hcpp のソースをダウンロードする。
 
-(2) �ȉ��̂悤�ɂ��ĉ𓀂���B
+(2) 以下のようにして解凍する。
 
     % bunzip2 -c hcpp_src.tar.bz2 | tar xf -
 
-(3) 10_hcpp/src �f�B���N�g���ɂ��� hcpp.sln �� Visual Studio �ŊJ����
-    �ʏ�ʂ�r���h����B
+(3) 10_hcpp/src ディレクトリにある hcpp.sln を Visual Studio で開いて
+    通常通りビルドする。
 
-    (*) Windows SDK �̃o�[�W�����Ɋւ���G���[���o���ꍇ�́A�G���[���b�Z�[�W�̒ʂ�
-        [�\�����[�V�����̍ă^�[�Q�b�g] ��I�����邱�ƂŃG���[������ł��܂��B
+    (*) Windows SDK のバージョンに関するエラーが出た場合は、エラーメッセージの通り
+        [ソリューションの再ターゲット] を選択することでエラーを回避できます。
 
-(4) ����m�F���@
+(4) 動作確認方法
 
     % cat sample.txt
     #define FOO(a,b) ((a)+(b))
@@ -27,6 +27,6 @@
     }
     %
 
-(5) gcc �ł̃r���h
+(5) gcc でのビルド
     % cd 10_hcpp/src
     % make
