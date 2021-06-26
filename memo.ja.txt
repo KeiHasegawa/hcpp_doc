@@ -1,8 +1,8 @@
-1. mcpp �̃\�[�X�p�b�P�[�W���擾
+1. mcpp のソースパッケージを取得
 
-    cygwin �̃C���X�g�[���[���g����.
+    cygwin のインストーラーを使った.
 
-2. �W�J���� gcc �Ńr���h
+2. 展開して gcc でビルド
 
     % ls
     mcpp-2.7.2-1-src.tar.xz
@@ -24,30 +24,29 @@
     % find . -name mcpp.exe
     src/mcpp.exe
 
-3. �Œ���K�v�ȃt�@�C���̂ݑI��� Makefile ���V���v���ɂ���
+3. 最低限必要なファイルのみ選んで Makefile もシンプルにした
 
-    2 �ł� ./configure �ɂ�� config.h �𐶐���, �R���p�C������ -DHAVE_CONFIG_H
-    ���w�肵�Ă��邪, �����ł� noconfig.H ���g���ăr���h����悤�ɂ���. �C���Ȃ���
-    �r���h�ł��Ă���.
+    2 では ./configure により config.h を生成し, コンパイル時に -DHAVE_CONFIG_H
+    を指定しているが, ここでは noconfig.H を使ってビルドするようにした. 修正なしで
+    ビルドできている.
 
-4. Visual Stdio �ł̃r���h
+4. Visual Stdio でのビルド
 
-    �{���x���Ƃ��Ĉ����ׂ����̂�, Visual Studio �̃R���p�C���ŃG���[�Ƃ��Ĉ����Ă�
-    ���̂ŃG���[�ɂȂ�Ȃ��悤�ɏC������.
-    �܂��R���p�C���I�v�V������ /D "_CRT_SECURE_NO_WARNINGS" ��ǉ�����.
+    本来警告として扱うべきものが, Visual Studio のコンパイラでエラーとして扱われてい
+    たのでエラーにならないように修正した.
+    またコンパイルオプションに /D "_CRT_SECURE_NO_WARNINGS" を追加した.
 
-5. �@�\�ǉ�
+5. 機能追加
 
-    -L <file> �Ń}�N���̒�`�ӏ��ƎQ�Ɖӏ����t�@�C���ɏo�͂���Ƃ�������.
-    fp_doc �Ō���.
+    -L <file> でマクロの定義箇所と参照箇所をファイルに出力するというもの.
+    fp_doc で検索.
 
-    -H �œ��̓t�@�C�����t���p�X�ɂ��Ȃ�.
+    -H で入力ファイルをフルパスにしない.
 
-6. -e �I�v�V�����o�O�C�� (2021/03/09)
-   -e sjis �Ȃǂ̂悤�Ȏw��ɑ΂��ďꍇ�ɂ���� "Unkonw encoding" �̃G���[��
-   �o�邱�Ƃ��������o�O���C������.
+6. -e オプションバグ修正 (2021/03/09)
+   -e sjis などのような指定に対して場合によって "Unkonw encoding" のエラーが
+   出ることがあったバグを修正した.
 
-7. JIS �R�����g�o�O�C�� (2021/03/11)
-   �R�����g�� JIS �ŏ������ꍇ JIS �R�[�h�� 0x2a, 0x2f ���R�����g��
-   �I���Ɖ��߂��Ă��܂��o�O���C������.
-
+7. JIS コメントバグ修正 (2021/03/11)
+   コメントを JIS で書いた場合 JIS コードの 0x2a, 0x2f をコメントの
+   終了と解釈してしまうバグを修正した.
