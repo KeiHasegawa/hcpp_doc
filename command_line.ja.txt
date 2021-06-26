@@ -1,9 +1,9 @@
-(1) �W���w�b�_�̃C���N���[�h
-(2) �R���p�C��
-(3) hcpp �� gcc �Ńr���h�����ꍇ
-(4) Visual Studio �̃w�b�_�[�t�@�C���̃C���N���[�h
+(1) 標準ヘッダのインクルード
+(2) コンパイル
+(3) hcpp を gcc でビルドした場合
+(4) Visual Studio のヘッダーファイルのインクルード
 
-(1) �W���w�b�_�̃C���N���[�h
+(1) 標準ヘッダのインクルード
 
     % cat a.c
     #include <stdio.h>
@@ -14,83 +14,83 @@
       return 0;
     }
     % C:/10_hcpp/src/x64/Debug/hcpp.exe -o a.i a.c
-    ������ stdio.h ���J���Ȃ��Ƃ����G���[���o�邩������Ȃ��B
+    ここで stdio.h が開けないというエラーが出るかもしれない。
 
     % gcc -o a.i -E a.c
-    �Ƃ��� a.i �����Ă݂�.
+    として a.i を見てみる.
 
     # 1 "/usr/include/stdio.h" 1 3 4
 
-    �̂悤�ȍs������΂��̃t�@�C�����J���ꂽ�`�Ղł���. ���ꂩ�琄�@�����,
+    のような行があればそのファイルが開かれた形跡である. これから推察すると,
 
     % C:/10_hcpp/src/x64/Debug/hcpp.exe -o a.i a.c -IC:/cygwin64/usr/include
 
-    �Ŏ��s����� stdio.h  ���J���Ȃ��Ƃ����G���[�������邾�낤�B�����������
-    �x������������o��B�ЂƂ܂���������Ƃ��������̂� -W 0 ���t���Ă݂�B
+    で実行すれば stdio.h  が開けないというエラーが消えるだろう。しかし何やら
+    警告がたくさん出る。ひとまずこれを何とかしたいので -W 0 も付けてみる。
     
     % C:/10_hcpp/src/x64/Debug/hcpp.exe -o a.i a.c -IC:/cygwin64/usr/include -W 0
 
-    ���ɂ���Ă� stddef.h ���J���Ȃ��Ƃ����G���[�����o����邩������Ȃ��B��͂�
+    環境によっては stddef.h が開けないというエラーが検出されるかもしれない。やはり
 
     % gcc -o a.i -E a.c
 
-    �̌��� a.i ���� stddef.h �̃p�X���m�F����΂悢�B
+    の結果 a.i から stddef.h のパスを確認すればよい。
 
     # 1 "/usr/lib/gcc/x86_64-pc-cygwin/7.3.0/include/stddef.h" 1 3 4
 
-    ���ۂɃt�@�C����
+    実際にファイルは
 
     C:/cygwin64/usr/lib/gcc/x86_64-pc-cygwin/7.3.0/include/stddef.h
 
-    �ł͂Ȃ�
+    ではなく
 
     C:/cygwin64/lib/gcc/x86_64-pc-cygwin/7.3.0/include/stddef.h
                ^^^^^
 
-    �ɂ������B�Ȃ̂� -IC:/cygwin64/lib/gcc/x86_64-pc-cygwin/7.3.0/include
-    �������Ă�����x hcpp �����s���Ă݂��B
+    にあった。なので -IC:/cygwin64/lib/gcc/x86_64-pc-cygwin/7.3.0/include
+    を加えてもう一度 hcpp を実行してみた。
     
     % C:/10_hcpp/src/x64/Debug/hcpp.exe -o a.i a.c -IC:/cygwin64/usr/include -W 0 -IC:/cygwin64/lib/gcc/x86_64-pc-cygwin/7.3.0/include
 
-    ���x�̓G���[���o�͂��ꂸ a.i ������ɍ쐬���ꂽ�B
+    今度はエラーが出力されず a.i が正常に作成された。
 
-(2) �R���p�C��
+(2) コンパイル
 
-    �G���[�`�F�b�N�݂̂���ł���Έȉ��̂悤�ɂ���B
+    エラーチェックのみするであれば以下のようにする。
 
     % C:/20_hcc1/src/x64/Debug/hcc1.exe a.i --no-generator
     
     typedef __builtin_va_list __gnuc_va_list;
 
-    ���̍s�ŃG���[���o���炵���B����� __builtin_va_list �� char* �̂悤��
-    �^���ł���Ή���ł����G���[�ł������B
-    -D__builtin_va_list='char*' ��ǉ����Ă�����x hcpp ���N������B
+    この行でエラーが出たらしい。これは __builtin_va_list が char* のように
+    型名であれば回避できたエラーであった。
+    -D__builtin_va_list='char*' を追加してもう一度 hcpp を起動する。
 
     % C:/10_hcpp/src/x64/Debug/hcpp.exe -o a.i a.c -IC:/cygwin64/usr/include -W 0 -IC:/cygwin64/lib/gcc/x86_64-pc-cygwin/7.3.0/include -D__builtin_va_list='char*'
-    ����� hcc1 ���N�������Ƃ���ȉ��ŃG���[�ɂȂ����B
+    さらに hcc1 を起動したところ以下でエラーになった。
 
     __extension__ typedef long long _off64_t;
 
-    -D__extension__= ��ǉ����� hcpp ���N������B
+    -D__extension__= を追加して hcpp を起動する。
 
-    hcc1 ���N�������Ƃ���ȉ��ŃG���[�ɂȂ����B
+    hcc1 を起動したところ以下でエラーになった。
 
     static __inline__  __uint32_t __ntohl(__uint32_t);
 
-    -D__inline__=inline ��ǉ����Ă��� hcpp ���N������
+    -D__inline__=inline を追加してもう hcpp を起動する
 
-    hcc1 ���N�������Ƃ���ȉ��ŃG���[�ɂȂ����B
+    hcc1 を起動したところ以下でエラーになった。
 
 	__asm__("bswap %0" : "=r" (_x) : "0" (_x));
 
-    -D__asm__=asm ��ǉ����� hcpp ���N������B
-    hcc1 ���N�������Ƃ���G���[�͌��o����Ȃ������B���� 
+    -D__asm__=asm を追加して hcpp を起動する。
+    hcc1 を起動したところエラーは検出されなかった。結局 
 
     % C:/10_hcpp/src/x64/Debug/hcpp.exe -o a.i a.c -IC:/cygwin64/usr/include -W 0 -IC:/cygwin64/lib/gcc/x86_64-pc-cygwin/7.3.0/include -D__builtin_va_list='char*' -D__extension__= -D__inline__=inline -D__asm__=asm
 
-    �Ƃ���Ηǂ������炵���B
+    とすれば良かったらしい。
    
-(3) hcpp �� gcc �Ńr���h�����ꍇ
+(3) hcpp を gcc でビルドした場合
 
     % pushd C:/10_hcpp/src
     % make
@@ -98,28 +98,28 @@
     % C:/10_hcpp/src/hcpp.exe -o a.i a.c -I/usr/include -W 0 -I/usr/lib/gcc/x86_64-pc-cygwin/7.3.0/include -D__builtin_va_list='char*' -D__extension__= -D__inline__=inline -D__asm__=asm
     % C:/20_hcc1/src/x64/Debug/hcc1.exe a.i --no-generator
 
-    ���̂悤�ɂ���Ɗ��Ғʂ蓮�삵�Ă����B�|�C���g�� -I �Ɏw�肷��f�B���N�g���ł���B
-    -IC:... �̂܂܂��Ɗ��Ғʂ蓮�삵�Ȃ��B
+    このようにすると期待通り動作していた。ポイントは -I に指定するディレクトリである。
+    -IC:... のままだと期待通り動作しない。
 
-(4) Visual Studio �̃w�b�_�[�t�@�C���̃C���N���[�h
+(4) Visual Studio のヘッダーファイルのインクルード
 
-    Visual Studio �̃R���p�C�� cl.exe ���R�}���h���C������N�����邽�߂�
-    ���ϐ� Include �Ƀw�b�_�[�t�@�C���̃C���N���[�h�f�B���N�g�����Z�b�g
-    ���邪, Visual Studio �Ńr���h���� hcpp.exe �ł����̋@�\������B
+    Visual Studio のコンパイラ cl.exe をコマンドラインから起動するために
+    環境変数 Include にヘッダーファイルのインクルードディレクトリをセット
+    するが, Visual Studio でビルドした hcpp.exe でもこの機能がある。
 
     % printenv Include
     C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.15.26726\include;C:\windows kits\10\include\10.0.17134.0\ucrt
 
-    ���̊��ϐ��͎����̊��ɍ��킹�ēK�؂Ȓl�ɂ���K�v������B�c�O�Ȃ���
-    gcc �Ńr���h���� hcpp.exe �ł͓��삵�Ȃ��悤���B
+    この環境変数は自分の環境に合わせて適切な値にする必要がある。残念ながら
+    gcc でビルドした hcpp.exe では動作しないようだ。
 
     % C:/10_hcpp/src/x64/Debug/hcpp.exe -o a.i a.c -D_M_X64 -D__int64='long long' -D__cdecl= -D__pragma='#pragma' -D_Bool=int -D__declspec\(a\)= -D__inline=inline -W 0
     % vs_header_conv.pl a.i > a.ii
     % C:/20_hcc1/src/x64/Debug/hcc1.exe a.ii --no-generator
 
-    �Ƃ���� hcc1.exe �ŃG���[�͌��o����Ȃ��B�c�O�Ȃ��� vs_header_conv.pl ��
-    �ϊ����Ȃ��ƃG���[�ɂȂ��Ă��܂��B
+    とすれば hcc1.exe でエラーは検出されない。残念ながら vs_header_conv.pl で
+    変換しないとエラーになってしまう。
 
-    �g�b�v -> C/C++ �v���v���Z�b�T -> vs_header_conv.pl
+    トップ -> C/C++ プリプロセッサ -> vs_header_conv.pl
 
-    ����擾�ł���B
+    から取得できる。
